@@ -173,6 +173,8 @@ body {
  .form-select {
    color: white;
    font-size: 1rem;
+   background-color: rgba(255, 255, 255, 0.05);
+   border: 1px solid rgba(255, 255, 255, .2);
  }
 
 .form-check-input {
@@ -199,4 +201,9 @@ body {
     color:white;
     text-decoration: underline;
   }
+}
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, .2);
 }

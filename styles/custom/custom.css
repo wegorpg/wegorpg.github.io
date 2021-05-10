@@ -10142,11 +10142,6 @@ body {
   border-radius: 4px;
   position: relative;
 }
-.radio-card .form-check-label::before {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  top: 40%;
-}
 
 .card-input-element {
   display: none;
@@ -10163,6 +10158,8 @@ body {
 .form-select {
   color: white;
   font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .form-check-input {
@@ -10189,6 +10186,11 @@ body {
 .btn-link:hover {
   color: white;
   text-decoration: underline;
+}
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /*# sourceMappingURL=custom.css.map */
