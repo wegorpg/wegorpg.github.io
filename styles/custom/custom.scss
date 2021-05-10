@@ -35,6 +35,17 @@ $theme-colors: (
   primary: $purple
 );
 
+$form-range-track-bg: rgba(255,255,255,.1);
+
+
+$input-bg:                              rgba(255,255,255,.2);
+$input-disabled-bg:                     rgba(255,255,255,.02);
+$input-disabled-border-color:           null;
+
+.bg-dark {
+  background-color: $gray-800;
+}
+
 /* Background */
 
 .bg-lighter {
@@ -144,14 +155,7 @@ body {
   border: 1px solid #363663;
   box-sizing: border-box;
   border-radius: 4px;
-  .custom-control-label::before {
-    background-color: rgba(255,255,255,.1);
-    border: 1px solid rgba(255,255,255,.4);
-    top: 40%;
-  }
-  .custom-control-label::after {
-    top: 40%;
-  }
+  position:relative;
 }
 
 .card-input-element {
@@ -165,3 +169,34 @@ body {
 .card-input-element:checked + .radio-card {
     border-radius: 0;
  }
+
+ .form-select {
+   color: white;
+   font-size: 1rem;
+ }
+
+.form-check-input {
+  border-color: rgba(255,255,255,.5);
+}
+
+.btn-secondary {
+  background-color: rgba(255,255,255,.2);
+  color: white;
+  box-shadow: 0 0 60px rgba(0,0,0,.2);
+  transition: all .2s linear;
+  &:hover {
+    color: white;
+    background-color: rgba(255,255,255,.25);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-link {
+  text-decoration: none;
+  color: white;
+  padding: 0;
+  &:hover {
+    color:white;
+    text-decoration: underline;
+  }
+}
