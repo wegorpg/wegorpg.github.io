@@ -52,6 +52,50 @@ $input-disabled-border-color:           null;
   background-color: rgba(255,255,255,.05);
 }
 
+
+/* Tabs */
+
+$nav-tabs-link-active-color:        $white;
+$nav-tabs-link-active-bg:           none;
+$nav-tabs-link-active-border-color: rgba(0,0,0,0) rgba(0,0,0,0) $green;
+
+$nav-tabs-border-width:             2px;
+
+.nav-link {
+  color: white;
+  &:active{
+    font-weight: bold;
+  }
+}
+
+/* Tab Styling */
+
+$nav-link-padding-y:                .5rem;
+$nav-link-padding-x:                1rem;
+$nav-link-font-size:                null;
+$nav-link-font-weight:              bold;
+$nav-link-color:                    rgba(255,255,255,.7);
+$nav-link-hover-color:              $white;
+$nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+$nav-link-disabled-color:           $gray-600;
+
+$nav-tabs-border-color:             rgba(255,255,255,.4);
+$nav-tabs-link-hover-border-color:  none;
+
+
+/* Accordions */
+
+$accordion-color:                         $white;
+$accordion-bg:                            rgba(255, 255, 255, 0.05);
+$accordion-border-color:                  rgba(255, 255, 255, .1);
+$accordion-button-active-bg:              rgba(255,255,255,.1);
+$accordion-button-active-color:           $white;
+
+.accordion-body {
+  color: $white;
+}
+
+
 //* Importing bootstrap after color updates so bootstrap variables don't override our colors. *//
 
 @import "../bootstrap/scss/bootstrap";
@@ -179,6 +223,7 @@ body {
 
 .form-check-input {
   border-color: rgba(255,255,255,.5);
+  color: white;
 }
 
 .btn-secondary {
@@ -206,4 +251,12 @@ body {
 .form-control {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, .2);
+  color:white;
+  &:focus, &:visited {
+    color:white;
+  }
+}
+
+.container {
+  max-width: 1040px;
 }
