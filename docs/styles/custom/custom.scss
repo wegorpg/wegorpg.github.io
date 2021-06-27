@@ -1,0 +1,262 @@
+
+
+/* ROYGBIV Colors */
+
+$blue:    #4E2ECF ;
+$indigo:  #6610f2 ;
+$purple:  #4E2ECF ;
+$pink:    #e83e8c ;
+$red:     #dc3545 ;
+$orange:  #fd7e14 ;
+$yellow:  #ffc107 ;
+$green:   #69C89D ;
+$teal:    #20c997 ;
+$cyan:    #17a2b8 ;
+
+/* Grays */
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #1D1D42 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+$grays: () !default;
+
+/* Theme Colors */
+
+$theme-colors: (
+  primary: $purple
+);
+
+$form-range-track-bg: rgba(255,255,255,.1);
+
+
+$input-bg:                              rgba(255,255,255,.2);
+$input-disabled-bg:                     rgba(255,255,255,.02);
+$input-disabled-border-color:           null;
+
+.bg-dark {
+  background-color: $gray-800;
+}
+
+/* Background */
+
+.bg-lighter {
+  background-color: rgba(255,255,255,.05);
+}
+
+
+/* Tabs */
+
+$nav-tabs-link-active-color:        $white;
+$nav-tabs-link-active-bg:           none;
+$nav-tabs-link-active-border-color: rgba(0,0,0,0) rgba(0,0,0,0) $green;
+
+$nav-tabs-border-width:             2px;
+
+.nav-link {
+  color: white;
+  &:active{
+    font-weight: bold;
+  }
+}
+
+/* Tab Styling */
+
+$nav-link-padding-y:                .5rem;
+$nav-link-padding-x:                1rem;
+$nav-link-font-size:                null;
+$nav-link-font-weight:              bold;
+$nav-link-color:                    rgba(255,255,255,.7);
+$nav-link-hover-color:              $white;
+$nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+$nav-link-disabled-color:           $gray-600;
+
+$nav-tabs-border-color:             rgba(255,255,255,.4);
+$nav-tabs-link-hover-border-color:  none;
+
+
+/* Accordions */
+
+$accordion-color:                         $white;
+$accordion-bg:                            rgba(255, 255, 255, 0.05);
+$accordion-border-color:                  rgba(255, 255, 255, .1);
+$accordion-button-active-bg:              rgba(255,255,255,.1);
+$accordion-button-active-color:           $white;
+
+.accordion-body {
+  color: $white;
+}
+
+
+//* Importing bootstrap after color updates so bootstrap variables don't override our colors. *//
+
+@import "../bootstrap/scss/bootstrap";
+
+/* Inputs */
+
+$input-bg: rgba(255,255,255,.02) !default;
+$input-color: $white;
+$input-border-color: rgba(255,255,255,.1) !default;
+
+label {
+  font-weight: $font-weight-bold;
+}
+
+.form-control-lg, .custom-select-lg {
+  font-size: 1rem;
+  height: 2.75rem;
+  color: $white;
+  background-color: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.2);
+}
+
+/* Button */
+
+.btn {
+  font-weight: bold;
+  font-size: 1rem;
+  height: 2.75rem;
+}
+
+/* Container */
+
+.container-xxs {
+  max-width: 678px;
+}
+
+/* Text Stylings */
+
+.text-light {
+  color: rgba(255,255,255,.7) !important;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Radio */
+
+/* This is the default state */
+.custom-radio .custom-control-label::before, .custom-checkbox .custom-control-label::before {
+    background-color: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.4);
+}
+
+/* This is the disabled state */
+
+/* the shadow; displayed while the element is in focus */
+.custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
+  background-color: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+/* This is the checked state */
+.custom-radio .custom-control-input:checked~.custom-control-label::before,
+.custom-radio .custom-control-input:checked~.custom-control-label::after {
+    background-color: $purple;  /* green */
+    border-radius: 50%;
+}
+
+/* active state i.e. displayed while the mouse is being pressed down */
+.custom-radio .custom-control-input:active ~ .custom-control-label::before {
+    color: #fff;
+    background-color: $purple;
+}
+
+/* the shadow; displayed while the element is in focus */
+.custom-radio .custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0,0,0,.4);
+}
+
+/* Point Calculator */
+
+.point-calculator {
+  border-radius: 1rem;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 1rem;
+}
+
+.utilized {
+  font-weight: bold;
+  font-size: 3rem;
+  color: $green;
+}
+
+/* Radio Card */
+
+.radio-card {
+  background: #26264E;
+  border: 1px solid #363663;
+  box-sizing: border-box;
+  border-radius: 4px;
+  position:relative;
+}
+
+.card-input-element {
+    display: none;
+}
+
+.radio-card:hover {
+    cursor: pointer;
+}
+
+.card-input-element:checked + .radio-card {
+    border-radius: 0;
+ }
+
+ .form-select {
+   color: white;
+   font-size: 1rem;
+   background-color: rgba(255, 255, 255, 0.05);
+   border: 1px solid rgba(255, 255, 255, .2);
+ }
+
+.form-check-input {
+  border-color: rgba(255,255,255,.5);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: rgba(255,255,255,.2);
+  color: white;
+  box-shadow: 0 0 60px rgba(0,0,0,.2);
+  transition: all .2s linear;
+  &:hover {
+    color: white;
+    background-color: rgba(255,255,255,.25);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-link {
+  text-decoration: none;
+  color: white;
+  padding: 0;
+  &:hover {
+    color:white;
+    text-decoration: underline;
+  }
+}
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, .2);
+  color:white;
+  &:focus, &:visited {
+    color:white;
+  }
+}
+
+.container {
+  max-width: 1040px;
+}
