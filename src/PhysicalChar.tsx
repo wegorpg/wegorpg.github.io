@@ -1,4 +1,8 @@
 import React from 'react';
+import { DataManager } from './DataManager';
+import { CustomizableDataType, ICustomizableData, SelectData, TextInputData } from './Common';
+import { SavedSelect } from './Components/SavedSelect';
+import { SavedText } from './Components/SavedText';
 
 export interface IPhysicalCharProps {
 }
@@ -8,25 +12,61 @@ interface IPhysicalCharState {
 }
 
 export class PhysicalChar extends React.Component<IPhysicalCharProps, IPhysicalCharState> {
+  private customizations: ICustomizableData[];
+
   constructor(props: IPhysicalCharProps) {
     super(props);
     this.state = {};
+
+    this.customizations = [];
+    const physicalData = DataManager.GetCustomData("PhysicalData");
+    if (physicalData != null) {
+      physicalData.forEach((data: ICustomizableData) => {
+        if (data != null) {
+          this.customizations.push(data);
+        }
+      });
+    }
   }
 
   public render() {
+    let items = [];
+    for (const customization of this.customizations) {
+      let item = null;
+      if (customization.DataType === CustomizableDataType.Select) {
+        const selectData = customization as SelectData;
+        item = <SavedSelect key={"physElement" + selectData._id} id={selectData._id} contClassName="col-md-6" name={selectData.Name} options={selectData.Options}
+          onValueChange={(value) => {
+            //console.log(value);
+          }} />
+      }
+      else if (customization.DataType === CustomizableDataType.Text) {
+        const textInputData = customization as TextInputData;
+        item = <SavedText key={"physElement" + textInputData._id} id={textInputData._id} contClassName="col-md-6" name={textInputData.Name}
+          defaultValue={textInputData.DefaultValue} isNumber={textInputData.IsNumber} onValueChange={(value) => {
+            //console.log(value);
+          }} />
+      }
+      else {
+        item = <SavedText key={"physElement" + customization._id} id={customization._id} contClassName="col-md-6" name={customization.Name} onValueChange={(value) => {
+          //console.log(value);
+        }} />;
+      }
+
+      items.push(item);
+    }
+
+    let grouped = [];
+    for (let i = 0; i < items.length; i += 2) {
+      grouped.push(
+        <div key={"physGrouped" + i} className="row mb-2 align-items-center justify-content-between">
+          {items[i]}
+          {(i + 1) < items.length ? items[i + 1] : ""}
+        </div>);
+    }
+
     return (
-      <div>
-        <nav className="navbar navbar-dark bg-dark">
-          <div className="container-fluid">
-            <a className="navbar-brand" href="#index">
-              WEGO RPG
-            </a>
-            <div className="d-flex align-items-center">
-              <a href="#index" className="mr-3 text-white">Character Builder</a>
-              <a href="#mgs" className="text-white">Your Character</a>
-            </div>
-          </div>
-        </nav>
+      <>
         <div className="container container-xxs border-bottom mt-5 pb-5">
           <h1 className="text-white mb-4">Physical Characteristics</h1>
           <p className="text-light">This section helps to describe the look and feel of your character making it easier htmlFor you and other players visualise what you look like. </p>
@@ -34,7 +74,7 @@ export class PhysicalChar extends React.Component<IPhysicalCharProps, IPhysicalC
         <div className="container container-xxs border-bottom mt-5 pb-5">
           <div className="row mb-2 align-items-center justify-content-between">
             <div className="col-3 d-flex">
-              <img className="col" src="images/camera-placeholder.svg"/>
+              <img className="col" alt="" src="images/camera-placeholder.svg" />
             </div>
             <div className="col-8">
               <label htmlFor="img-url" className="htmlForm-label text-white fw-bold">Character Portrait URL</label>
@@ -45,160 +85,7 @@ export class PhysicalChar extends React.Component<IPhysicalCharProps, IPhysicalC
           </div>
         </div>
         <div className="container container-xxs mt-5 pb-5">
-          <div className="row mb-2 align-items-center justify-content-between">
-            <div className="col-md-6">
-              <label htmlFor="char-name" className="htmlForm-label text-white fw-bold">Character Name</label>
-              <div className="input-group ">
-                <input type="text" className="htmlForm-control htmlForm-control-lg mb-3" id="char-name" />
-              </div>
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="points" className="htmlForm-label text-white fw-bold">Max Points</label>
-              <input type="number" className="htmlForm-control htmlForm-control-lg mb-3" id="points" defaultValue="150" />
-            </div>
-          </div>
-          <div className="row mb-2 align-items-center justify-content-between ">
-            <div className="col-md-6">
-              <label htmlFor="species" className="htmlForm-label text-white fw-bold">Species</label>
-              <select className="custom-select custom-select-lg mb-3" id="species">
-                <option>Human</option>
-              </select>
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="age" className="htmlForm-label text-white fw-bold">Age</label>
-              <select className="custom-select custom-select-lg mb-3" id="age">
-                <option>Infant</option>
-                <option>Child</option>
-                <option>Teenager</option>
-                <option>Young Adult</option>
-                <option>Adult</option>
-                <option>Older Adult</option>
-                <option>Senior</option>
-              </select>
-            </div>
-          </div>
-          <div className="row mb-2 align-items-center justify-content-between ">
-            <div className="col-md-6">
-              <label htmlFor="gender" className="htmlForm-label text-white fw-bold">Gender</label>
-              <select className="custom-select custom-select-lg mb-3" id="gender">
-                <option>Female</option>
-                <option>Male</option>
-                <option>Non-binary</option>
-              </select>
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="hair" className="htmlForm-label text-white fw-bold">Hair Color</label>
-              <select className="custom-select custom-select-lg mb-3" id="hair">
-                <option>Black</option>
-                <option>Blonde</option>
-                <option>Blue</option>
-                <option>Brow mb-2n</option>
-                <option>Green</option>
-                <option>Grey</option>
-                <option>Orange</option>
-                <option>Purple</option>
-                <option>Red</option>
-                <option>Yellow</option>
-                <option>White</option>
-                <option>Other</option>
-              </select>
-            </div>
-          </div>
-          <div className="row mb-2 align-items-center justify-content-between ">
-            <div className="col-md-6">
-              <label htmlFor="eye" className="htmlForm-label text-white fw-bold">Eye Color</label>
-              <select className="custom-select custom-select-lg mb-3" id="eye">
-                <option>Black</option>
-                <option>Blonde</option>
-                <option>Blue</option>
-                <option>Brow mb-2n</option>
-                <option>Green</option>
-                <option>Grey</option>
-                <option>Orange</option>
-                <option>Purple</option>
-                <option>Red</option>
-                <option>Yellow</option>
-                <option>White</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="eye" className="htmlForm-label text-white fw-bold">Height</label>
-              <select className="custom-select custom-select-lg mb-3" id="eye">
-                <option>Dwarf</option>
-                <option>Short</option>
-                <option>Average Height</option>
-                <option>Tall</option>
-                <option>Giant</option>
-                <option>Grey</option>
-                <option>Orange</option>
-                <option>Purple</option>
-                <option>Red</option>
-                <option>Yellow</option>
-                <option>White</option>
-                <option>Other</option>
-              </select>
-            </div>
-          </div>
-          <div className="row mb-2 align-items-center justify-content-between ">
-            <div className="col-md-6">
-              <label htmlFor="eye" className="htmlForm-label text-white fw-bold">Eye Color</label>
-              <select className="custom-select custom-select-lg mb-3" id="eye">
-                <option>Black</option>
-                <option>Blonde</option>
-                <option>Blue</option>
-                <option>Brow mb-2n</option>
-                <option>Green</option>
-                <option>Grey</option>
-                <option>Orange</option>
-                <option>Purple</option>
-                <option>Red</option>
-                <option>Yellow</option>
-                <option>White</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div className="col-md-6">
-              <div className="d-flex justify-content-between">
-                <label htmlFor="build" className="htmlForm-label text-white fw-bold">Build</label>
-                <a className="text-white" data-bs-toggle="modal" data-bs-target="#buildModal">Learn more</a>
-              </div>
-              <select className="custom-select custom-select-lg mb-3" id="build">
-                <option>Ectomorph</option>
-                <option>Mesomorph</option>
-                <option>Endomorph</option>
-              </select>
-            </div>
-          </div>
-          <div className="row mb-2 align-items-center justify-content-between ">
-            <div className="col-md-6">
-              <label htmlFor="height" className="htmlForm-label text-white fw-bold">Height</label>
-              <select className="custom-select custom-select-lg mb-3" id="height">
-                <option>Dwarf</option>
-                <option>Short</option>
-                <option>Average Height</option>
-                <option>Tall</option>
-                <option>Giant</option>
-                <option>Grey</option>
-                <option>Orange</option>
-                <option>Purple</option>
-                <option>Red</option>
-                <option>Yellow</option>
-                <option>White</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div className="col-md-6">
-              <label htmlFor="wealth" className="htmlForm-label text-white fw-bold">Wealth</label>
-              <select className="custom-select custom-select-lg mb-3" id="wealth">
-                <option>Homeless</option>
-                <option>Lower className</option>
-                <option>Middle className</option>
-                <option>Upper className</option>
-                <option>Ruling className</option>
-              </select>
-            </div>
-          </div>
+          {grouped}
           <div className="row mb-2 mt-4 float-right">
             <div className="col">
               <a className="btn btn-primary d-flex align-items-center justify-content-end mb-5" href="#personality">Continue to Personality</a>
@@ -234,7 +121,7 @@ export class PhysicalChar extends React.Component<IPhysicalCharProps, IPhysicalC
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
