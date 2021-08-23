@@ -47,10 +47,8 @@ export class CharacterSheet extends React.Component<ICharacterSheetProps, IChara
           if (customization._id === "physCharName") {
             charName = value;
           }
-          else if (customization._id === "physMaxPoints") {
 
-          }
-          else {
+          if (customization.getArg("HideOnMGS") !== true) {
             physItems.push(<div className="col-6 col-md-3">
               <h6 className="fw-bold text-white">{customization.Name}</h6>
               <p className="text-light">{value}</p>

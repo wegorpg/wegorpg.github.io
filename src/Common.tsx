@@ -13,6 +13,8 @@ export interface ICustomizableData {
     DataType: CustomizableDataType;
     Name: string;
     Description: string;
+
+    getArg(key: string): any;
 }
 
 export interface ISelectDataOption {
@@ -21,13 +23,16 @@ export interface ISelectDataOption {
 }
 
 export class SelectData implements ICustomizableData {
+    private _args: Map<string, any>;
+
     public readonly _id: string;
     public readonly DataType = CustomizableDataType.Select;
     public readonly Name: string;
     public readonly Description: string;
     public Options: ReadonlyArray<ISelectDataOption>;
 
-    constructor(_id: string, name: string, description: string, options: ISelectDataOption[]) {
+    constructor(_id: string, name: string, description: string, args: Map<string, any>, options: ISelectDataOption[]) {
+        this._args = args;
         this._id = _id;
         this.Name = name;
         this.Description = description;
@@ -63,13 +68,28 @@ export class SelectData implements ICustomizableData {
         return null;
     }
 
+    public getArg(key: string): any {
+        if (this._args.has(key)) {
+            return this._args.get(key);
+        }
+
+        return null;
+    }
+
     public static CreateFromDataObject(_id: string, name: string, description: string, args: any): SelectData | null {
-        if (args === null || !Array.isArray(args)) {
+        if (args === null || typeof args !== "object" || !args.hasOwnProperty('Options') || !Array.isArray(args.Options)) {
             return null;
         }
 
+        const argsMap = new Map<string, any>();
+        for (const key in args) {
+            if (args.hasOwnProperty(key)) {
+                argsMap.set(key, args[key]);
+            }
+        }
+
         const options: ISelectDataOption[] = [];
-        for (const option of args) {
+        for (const option of args.Options) {
             if (option === null || typeof option !== 'object'
                 || !option.hasOwnProperty('_id') || typeof option._id !== 'string'
                 || !option.hasOwnProperty('Value') || typeof option.Value !== 'string') {
@@ -79,11 +99,13 @@ export class SelectData implements ICustomizableData {
             options.push({_id: option._id, Value: option.Value});
         }
 
-        return new SelectData(_id, name, description, options);
+        return new SelectData(_id, name, description, argsMap, options);
     }
 }
 
 export class TextInputData implements ICustomizableData {
+    private _args: Map<string, any>;
+
     public readonly _id: string;
     public readonly DataType = CustomizableDataType.Text;
     public readonly Name: string;
@@ -91,12 +113,21 @@ export class TextInputData implements ICustomizableData {
     public readonly DefaultValue: string;
     public readonly IsNumber: boolean;
 
-    constructor(_id: string, name: string, description: string, defaultValue: string, isNumber: boolean) {
+    constructor(_id: string, name: string, description: string, args: Map<string, any>, defaultValue: string, isNumber: boolean) {
+        this._args = args;
         this._id = _id;
         this.Name = name;
         this.Description = description;
         this.DefaultValue = defaultValue;
         this.IsNumber = isNumber;
+    }
+
+    public getArg(key: string): any {
+        if (this._args.has(key)) {
+            return this._args.get(key);
+        }
+
+        return null;
     }
 
     public static CreateFromDataObject(_id: string, name: string, description: string, args: any): TextInputData | null {
@@ -106,7 +137,14 @@ export class TextInputData implements ICustomizableData {
             return null;
         }
 
-        return new TextInputData(_id, name, description, args.DefaultValue as string, args.IsNumber as boolean);
+        const argsMap = new Map<string, any>();
+        for (const key in args) {
+            if (args.hasOwnProperty(key)) {
+                argsMap.set(key, args[key]);
+            }
+        }
+
+        return new TextInputData(_id, name, description, argsMap, args.DefaultValue as string, args.IsNumber as boolean);
     }
 }
 

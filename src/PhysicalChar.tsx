@@ -3,6 +3,7 @@ import { DataManager } from './DataManager';
 import { CustomizableDataType, ICustomizableData, SelectData, TextInputData } from './Common';
 import { SavedSelect } from './Components/SavedSelect';
 import { SavedText } from './Components/SavedText';
+import { SavedPortrait } from './Components/SavedPortrait';
 
 export interface IPhysicalCharProps {
 }
@@ -13,23 +14,39 @@ interface IPhysicalCharState {
 
 export class PhysicalChar extends React.Component<IPhysicalCharProps, IPhysicalCharState> {
   private customizations: ICustomizableData[];
+  private portraitUrl: ICustomizableData | null;
 
   constructor(props: IPhysicalCharProps) {
     super(props);
     this.state = {};
 
     this.customizations = [];
+    this.portraitUrl = null;
     const physicalData = DataManager.GetCustomData("PhysicalData");
     if (physicalData != null) {
       physicalData.forEach((data: ICustomizableData) => {
         if (data != null) {
-          this.customizations.push(data);
+          if (data._id === "physCharPortrait") {
+            this.portraitUrl = data;
+          }
+          else {
+            this.customizations.push(data);
+          }
         }
       });
     }
   }
 
   public render() {
+    let portrait = <span />;
+    if (this.portraitUrl !== null) {
+      const textInputData = this.portraitUrl as TextInputData;
+      portrait = <SavedPortrait key={"physElement" + textInputData._id} id={textInputData._id} contClassName="row mb-2 align-items-center justify-content-between" name={textInputData.Name}
+      defaultValue={textInputData.DefaultValue} onValueChange={(value) => {
+        //console.log(value);
+      }} />;
+    }
+
     let items = [];
     for (const customization of this.customizations) {
       let item = null;
@@ -72,17 +89,7 @@ export class PhysicalChar extends React.Component<IPhysicalCharProps, IPhysicalC
           <p className="text-light">This section helps to describe the look and feel of your character making it easier htmlFor you and other players visualise what you look like. </p>
         </div>
         <div className="container container-xxs border-bottom mt-5 pb-5">
-          <div className="row mb-2 align-items-center justify-content-between">
-            <div className="col-3 d-flex">
-              <img className="col" alt="" src="images/camera-placeholder.svg" />
-            </div>
-            <div className="col-8">
-              <label htmlFor="img-url" className="htmlForm-label text-white fw-bold">Character Portrait URL</label>
-              <div className="input-group ">
-                <input type="text" className="htmlForm-control htmlForm-control-lg mb-3" id="img-url" />
-              </div>
-            </div>
-          </div>
+          {portrait}
         </div>
         <div className="container container-xxs mt-5 pb-5">
           {grouped}
