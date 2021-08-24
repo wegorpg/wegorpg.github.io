@@ -32,6 +32,12 @@ export class CharacterSheet extends React.Component<ICharacterSheetProps, IChara
   }
 
   public render() {
+    let portraitUrl = "images/camera-placeholder.svg";
+    let portraitUrlSaved = DataManager.GetData("physCharPortrait", new SavedTextValue(""));
+    if (portraitUrlSaved !== null && portraitUrlSaved.Value.length) {
+      portraitUrl = portraitUrlSaved.Value;
+    }
+
     let charName = "";
     let physItems = [];
     for (const customization of this.physCustomizations) {
@@ -120,7 +126,7 @@ export class CharacterSheet extends React.Component<ICharacterSheetProps, IChara
         <div className="container mt-5 mb-5">
           <div className="row">
             <div className="col-md-4">
-              <img src="images/ex-image.jpg" alt="" className="w-100" />
+              <img src={portraitUrl} alt="" className="w-100" />
               <div className="bg-lighter point-calculator p-4 mt-5">
                 <h5 className="text-white">Items</h5>
                 <div className="mt-4">
