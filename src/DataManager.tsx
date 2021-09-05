@@ -1,9 +1,12 @@
-import {ISavedData, CustomizableDataType, ICustomizableData, SelectData, TextInputData} from './Common';
+import {ISavedData, ICustomizableData, SavedTextValue} from './Common';
+import {Utils} from './Utils';
 import * as Data from './Data';
 
 export class DataManager {
   private static _customData: Map<string, Map<string, ICustomizableData>> = new Map<string, Map<string, ICustomizableData>>();
   private static _data: Map<string, object> = new Map<string, object>();
+  private static _maxPoints: number = 150;
+  private static _points: number = 0;
 
   public static InitializeCustomData(): void {
     if (typeof Data !== "object") {
@@ -19,31 +22,9 @@ export class DataManager {
 
       const customData = new Map<string, ICustomizableData>();
       for (const dataItem of dataObj[key]) {
-        if (dataItem === null || typeof dataItem !== 'object'
-          || !dataItem.hasOwnProperty('_id') || dataItem._id === null || typeof dataItem._id !== 'string' || dataItem._id.length < 1
-          || !dataItem.hasOwnProperty('DataType') || dataItem.DataType === null || typeof dataItem.DataType !== 'string' || dataItem.DataType.length < 1
-          || !dataItem.hasOwnProperty('Name') || dataItem.Name === null || typeof dataItem.Name !== 'string' || dataItem.Name.length < 1
-          || !dataItem.hasOwnProperty('Description') || dataItem.Description === null || typeof dataItem.Description !== 'string' || dataItem.Description.length < 1) {
-          continue;
-        }
-
-        if (!CustomizableDataType.hasOwnProperty(dataItem.DataType)) {
-          continue;
-        }
-
-        if (dataItem.DataType === CustomizableDataType.Select) {
-          const args = dataItem.hasOwnProperty('Args') ? dataItem.Args : null;
-          let customizableData = SelectData.CreateFromDataObject(dataItem._id, dataItem.Name, dataItem.Description, args);
-          if (customizableData !== null) {
-            customData.set(customizableData._id, customizableData);
-          }
-        }
-        else if (dataItem.DataType === CustomizableDataType.Text) {
-          const args = dataItem.hasOwnProperty('Args') ? dataItem.Args : null;
-          let customizableData = TextInputData.CreateFromDataObject(dataItem._id, dataItem.Name, dataItem.Description, args);
-          if (customizableData !== null) {
-            customData.set(customizableData._id, customizableData);
-          }
+        const customizableData = Utils.GetCustomizableDataFromAny(dataItem);
+        if (customizableData !== null) {
+          customData.set(customizableData._id, customizableData);
         }
       }
 
@@ -55,6 +36,7 @@ export class DataManager {
 
   public static SetData(key: string, data: ISavedData): void {
     this._data.set(key, data.getSaveData());
+    this.CalculatePoints();
   }
 
   public static GetData<T extends ISavedData>(key: string, dataObj: T): T | null {
@@ -208,6 +190,32 @@ export class DataManager {
       console.log(error);
       onLoadDone(false);
     });
+  }
+
+  public static CalculatePoints(): void {
+    const savedValue = DataManager.GetData("physMaxPoints", new SavedTextValue(""));
+    if (savedValue !== null) {
+      const parsed = parseInt(savedValue.Value);
+      if (!isNaN(parsed)) {
+        this._maxPoints = parsed;
+      }
+    }
+
+    let points = 0;
+    this._customData.forEach((val) => {
+      val.forEach((data) => {
+        points += data.calculatePoints();
+      });
+    });
+    this._points = points;
+  }
+
+  public static GetMaxPoints(): number {
+    return this._maxPoints;
+  }
+
+  public static GetPoints(): number {
+    return this._points;
   }
 
   private static MapReplacer(key: any, value: any) {

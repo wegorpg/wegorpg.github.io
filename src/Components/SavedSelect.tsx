@@ -1,12 +1,9 @@
 import React from 'react';
-import { SavedTextValue, ISelectDataOption } from '../Common';
-import { DataManager } from '../DataManager';
+import {SelectData} from '../Customizable/SelectData';
 
 export interface ISavedSelectProps {
-  id: string;
+  data: SelectData;
   contClassName: string;
-  name: string;
-  options: readonly ISelectDataOption[];
   onValueChange(value: string): void;
 }
 
@@ -18,35 +15,16 @@ export class SavedSelect extends React.Component<ISavedSelectProps, ISavedSelect
   constructor(props: ISavedSelectProps) {
     super(props);
 
-    let value = "";
-    const savedValue = DataManager.GetData(props.id, new SavedTextValue(""));
-    if (savedValue !== null) {
-      value = savedValue.Value;
-    }
-
-    let isValid = false;
-    for (const option of props.options) {
-      if (value === option._id) {
-        isValid = true;
-        break;
-      }
-    }
-
-    if (!isValid && props.options.length > 0) {
-      value = props.options[0]._id;
-      DataManager.SetData(props.id, new SavedTextValue(value));
-      props.onValueChange(value);
-    }
-
+    const value = this.props.data.getDefaultValue();
     this.state = { value: value };
   }
 
   public render() {
     return <div className={this.props.contClassName}>
-      <label htmlFor={this.props.id} className="htmlForm-label text-white fw-bold">{this.props.name}</label>
-      <select className="custom-select custom-select-lg mb-3" id={this.props.id} value={this.state.value} onChange={(e) => {this.onChange(e.target.value)}}>
+      <label htmlFor={this.props.data._id} className="htmlForm-label text-white fw-bold">{this.props.data.Name}</label>
+      <select className="custom-select custom-select-lg mb-3" id={this.props.data._id} value={this.state.value} onChange={(e) => {this.onChange(e.target.value)}}>
         {
-          this.props.options.map((option: ISelectDataOption) => {
+          this.props.data.Options.map((option) => {
             return <option key={option._id} value={option._id}>{option.Value}</option>;
           })
         }
@@ -55,7 +33,7 @@ export class SavedSelect extends React.Component<ISavedSelectProps, ISavedSelect
   }
 
   private onChange(value: string) {
-    DataManager.SetData(this.props.id, new SavedTextValue(value));
+    this.props.data.onValueChange(value);
     this.props.onValueChange(value);
     this.setState({ value: value });
   }

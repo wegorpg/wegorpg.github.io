@@ -1,9 +1,11 @@
 import React from 'react';
-import { DataManager } from './DataManager';
-import { CustomizableDataType, ICustomizableData, SelectData, TextInputData } from './Common';
-import { SavedSelect } from './Components/SavedSelect';
-import { SavedText } from './Components/SavedText';
-import { SavedPortrait } from './Components/SavedPortrait';
+import {DataManager} from './DataManager';
+import {CustomizableDataType, ICustomizableData} from './Common';
+import {SelectData} from './Customizable/SelectData';
+import {TextInputData} from './Customizable/TextInputData';
+import {SavedSelect} from './Components/SavedSelect';
+import {SavedText} from './Components/SavedText';
+import {SavedPortrait} from './Components/SavedPortrait';
 
 export interface IPhysicalCharProps {
 }
@@ -41,36 +43,19 @@ export class PhysicalChar extends React.Component<IPhysicalCharProps, IPhysicalC
     let portrait = <span />;
     if (this.portraitUrl !== null) {
       const textInputData = this.portraitUrl as TextInputData;
-      portrait = <SavedPortrait key={"physElement" + textInputData._id} id={textInputData._id} contClassName="row mb-2 align-items-center justify-content-between" name={textInputData.Name}
-      defaultValue={textInputData.DefaultValue} onValueChange={(value) => {
-        //console.log(value);
-      }} />;
+      portrait = <SavedPortrait key={"physElement" + textInputData._id} data={textInputData} contClassName="row mb-2 align-items-center justify-content-between" onValueChange={(value) => { }} />;
     }
 
     let items = [];
     for (const customization of this.customizations) {
-      let item = null;
       if (customization.DataType === CustomizableDataType.Select) {
         const selectData = customization as SelectData;
-        item = <SavedSelect key={"physElement" + selectData._id} id={selectData._id} contClassName="col-md-6" name={selectData.Name} options={selectData.Options}
-          onValueChange={(value) => {
-            //console.log(value);
-          }} />
+        items.push(<SavedSelect key={"physElement" + selectData._id} data={selectData} contClassName="col-md-6" onValueChange={(value) => { }} />);
       }
       else if (customization.DataType === CustomizableDataType.Text) {
         const textInputData = customization as TextInputData;
-        item = <SavedText key={"physElement" + textInputData._id} id={textInputData._id} contClassName="col-md-6" name={textInputData.Name}
-          defaultValue={textInputData.DefaultValue} isNumber={textInputData.IsNumber} onValueChange={(value) => {
-            //console.log(value);
-          }} />
+        items.push(<SavedText key={"physElement" + textInputData._id} data={textInputData} contClassName="col-md-6" onValueChange={(value) => { }} />);
       }
-      else {
-        item = <SavedText key={"physElement" + customization._id} id={customization._id} contClassName="col-md-6" name={customization.Name} onValueChange={(value) => {
-          //console.log(value);
-        }} />;
-      }
-
-      items.push(item);
     }
 
     let grouped = [];

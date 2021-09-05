@@ -1,7 +1,10 @@
 import React from 'react';
 import {Utils} from './Utils';
 import {DataManager} from './DataManager';
-import {CustomizableDataType, ICustomizableData, SelectData, SavedTextValue} from './Common';
+import {CustomizableDataType, ICustomizableData, SavedTextValue} from './Common';
+import {SelectData} from './Customizable/SelectData';
+import {PersonalityData} from './Customizable/PersonalityData';
+import {PassiveAbilityAccordion} from './Components/PassiveAbilityAccordion';
 
 export interface ICharacterSheetProps {
   onLoadingStateChange(isLoading: boolean, onComplete: () => void): void;
@@ -14,6 +17,7 @@ interface ICharacterSheetState {
 
 export class CharacterSheet extends React.Component<ICharacterSheetProps, ICharacterSheetState> {
   private physCustomizations: ICustomizableData[];
+  private personalities: PersonalityData[];
 
   constructor(props: ICharacterSheetProps) {
     super(props);
@@ -29,9 +33,21 @@ export class CharacterSheet extends React.Component<ICharacterSheetProps, IChara
         }
       });
     }
+
+    this.personalities = [];
+    const personalityData = DataManager.GetCustomData("PersonalityData");
+    if (personalityData != null) {
+      personalityData.forEach((data: ICustomizableData) => {
+        if (data != null && data.DataType === CustomizableDataType.Personality) {
+          this.personalities.push(data as PersonalityData);
+        }
+      });
+    }
   }
 
   public render() {
+    const charLink = window.location.origin + "/?c=" + this.state.charUrl;
+
     let portraitUrl = "images/camera-placeholder.svg";
     let portraitUrlSaved = DataManager.GetData("physCharPortrait", new SavedTextValue(""));
     if (portraitUrlSaved !== null && portraitUrlSaved.Value.length) {
@@ -76,7 +92,19 @@ export class CharacterSheet extends React.Component<ICharacterSheetProps, IChara
         </div>);
     }
 
-    const charLink = window.location.origin + "/?c=" + this.state.charUrl;
+    let charTraits = [];
+    for (const personality of this.personalities) {
+      let traits = personality.getDefaultTraits();
+      for (const trait of traits) {charTraits.push(trait.Name); }
+    }
+
+    let charAbilities = [];
+    for (const personality of this.personalities) {
+      let abilities = personality.getDefaultAbilities();
+      for (const ability of abilities) {
+        charAbilities.push(<PassiveAbilityAccordion key={"charSheetAbility_" + ability._id} persName={personality.Name} abilityName={ability.Name} abilityDesc={ability.Description} />);
+      }
+    }
 
     return (
       <>
@@ -169,39 +197,11 @@ export class CharacterSheet extends React.Component<ICharacterSheetProps, IChara
                       <h5 className="fw-bold text-white">Character Traits</h5>
                     </div>
                     <div className="d-flex flex-wrap mt-4">
-                      <p className="text-light me-3">
-                        Dogmatic
-                      </p>
-                      <p className="text-light me-3">
-                        Ceremonial
-                      </p>
-                      <p className="text-light me-3">
-                        Unrelenting
-                      </p>
-                      <p className="text-light me-3">
-                        Disciplined
-                      </p>
-                      <p className="text-light me-3">
-                        Ambitious
-                      </p>
-                      <p className="text-light me-3">
-                        Stubborn
-                      </p>
-                      <p className="text-light me-3">
-                        Focused
-                      </p>
-                      <p className="text-light me-3">
-                        Tough-Mindedness
-                      </p>
-                      <p className="text-light me-3">
-                        Antagonistic
-                      </p>
-                      <p className="text-light me-3">
-                        Realistic
-                      </p>
-                      <p className="text-light me-3">
-                        Providing
-                      </p>
+                      {
+                        charTraits.map((item, index) => {
+                          return <p key={"charSheetTrait" + index} className="text-light me-3">{item}</p>;
+                        })
+                      }
                     </div>
                   </div>
                   <div className="mt-5">
@@ -224,46 +224,7 @@ export class CharacterSheet extends React.Component<ICharacterSheetProps, IChara
                       <h5 className="fw-bold text-white">Passive Abilities</h5>
                     </div>
                     <div className="accordion accordion-flush mt-4" id="accordionFlushExample">
-                      <div className="accordion-item">
-                        <h2 className="accordion-header" id="flush-headingOne">
-                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                            <span className="fw-bold me-2">Devout</span> (Traditional)
-                          </button>
-                        </h2>
-                        <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                          <div className="accordion-body">By retreating back into your faith you are able to gain back the stability you've been missing and regain your thoughts. Prolonged peaceful prayer from dogmatic religions, participating in religious practices and ceremony replenish 1 ability of your choosing. Can only be used once per session.</div>
-                        </div>
-                      </div>
-                      <div className="accordion-item">
-                        <h2 className="accordion-header" id="flush-headingTwo">
-                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                            <span className="fw-bold me-2">Zealot</span> (Organized)
-                          </button>
-                        </h2>
-                        <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                          <div className="accordion-body">Driven, disciplined, and deliberate. You will take any and all measures to achieve your goals. When working towards a goal you take reduced emotional and intellectual damage.</div>
-                        </div>
-                      </div>
-                      <div className="accordion-item">
-                        <h2 className="accordion-header" id="flush-headingThree">
-                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                            <span className="fw-bold me-2">Peace in Solitude</span> (Introvert)
-                          </button>
-                        </h2>
-                        <div id="flush-collapseThree" className="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                          <div className="accordion-body">Recharge your HP meters through solitude and quiet.</div>
-                        </div>
-                      </div>
-                      <div className="accordion-item">
-                        <h2 className="accordion-header" id="flush-headingFour">
-                          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
-                            <span className="fw-bold me-2">Selfish</span> (Introvert)
-                          </button>
-                        </h2>
-                        <div id="flush-collapseFour" className="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
-                          <div className="accordion-body">Death has very little effect on you. Take no Emotional damage for killing or people dying near you.</div>
-                        </div>
-                      </div>
+                      {charAbilities}
                     </div>
                   </div>
                   <div>
